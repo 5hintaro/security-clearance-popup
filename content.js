@@ -1,41 +1,41 @@
-// アラートを一度だけ表示するためのフラグ
+// Flag to display the alert only once
 let alertShown = false;
 
-// 現在の求人IDを保持する変数
+// Variable to store the current job ID
 let currentJobId = null;
 
-// SC Clearance, SC Cleared, Security Clearance を検出する関数
+// Function to detect Security Clearance
 function checkForSecurityClearance() {
     try {
         console.log('Checking for security clearance keywords...');
         const bodyText = document.body ? document.body.innerText : '';
-        // "SC Clearance", "SC Cleared", "Security Clearance" のいずれかにマッチ
-        const scRegex = /\b(SC\s*Clearance|SC\s*Cleared|Security\s*Clearance)\b/i;
+        // Specify the target
+        const scRegex = /\b(SC\s*Clearance|SC\s*Cleared|Security\s*Clearance|DC\s*Clearance|DC\s*Cleared|)\b/i;
         if (scRegex.test(bodyText)) {
             console.log('Security clearance keyword found.');
             if (!alertShown) {
-                // アラートを表示
+                // Display the alert
                 alert('This job includes a security clearance requirement!');
-                alertShown = true; // アラートを一度だけ表示
+                alertShown = true; // Display the alert only once
             }
         } else {
             console.log('Security clearance keywords not found.');
-            // "SC Clearance" などが見つからない場合、フラグをリセットしない
-            // これにより、ページ内の動的な変更でアラートが再度表示されることを防ぎます
+            // Do not reset the flag if "SC Clearance" etc. are not found
+            // This prevents the alert from being shown again due to dynamic changes in the page
         }
     } catch (error) {
         console.error('Error in checkForSecurityClearance:', error);
     }
 }
 
-// Indeedの求人詳細ページを識別する関数
+// Function to identify Indeed job detail pages
 function isIndeedJobDetailPage() {
     const url = window.location.href;
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.has('vjk');
 }
 
-// ページの変化を処理する関数
+// Function to handle page changes
 function handlePageChange() {
     if (isIndeedJobDetailPage()) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -44,7 +44,7 @@ function handlePageChange() {
         if (jobId !== currentJobId) {
             console.log('New job detail page detected.');
             currentJobId = jobId;
-            alertShown = false; // 新しい求人ページに移動した際にフラグをリセット
+            alertShown = false; // Reset the flag when navigating to a new job page
             checkForSecurityClearance();
         } else {
             console.log('Same job detail page. No action taken.');
@@ -54,9 +54,9 @@ function handlePageChange() {
     }
 }
 
-// MutationObserverの初期化関数
+// Function to initialize MutationObserver
 function initializeObserver() {
-    // History APIの変更をフックしてSPAのページ遷移を監視
+    // Hook into the History API changes to monitor SPA page transitions
     const originalPushState = history.pushState;
     history.pushState = function () {
         originalPushState.apply(this, arguments);
@@ -69,17 +69,17 @@ function initializeObserver() {
         handlePageChange();
     };
 
-    // popstateイベント（ブラウザの戻る/進むボタン）を監視
+    // Monitor popstate events (browser back/forward buttons)
     window.addEventListener('popstate', handlePageChange);
 
-    // DOMの変化を監視
+    // Monitor DOM changes
     const observer = new MutationObserver((mutations, obs) => {
         handlePageChange();
     });
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-// ページの読み込みが完了した後に関数を実行
+// Execute functions after the page has finished loading
 window.addEventListener('load', () => {
     handlePageChange();
     initializeObserver();
