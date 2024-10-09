@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "SC Clearance Popup for Indeed and LinkedIn",
-  "version": "1.2",
-  "description": "Displays an alert when a job listing on Indeed or LinkedIn includes 'SC Clearance'.",
+  "name": "Security Clearance Popup for Indeed and LinkedIn",
+  "version": "1.0",
+  "description": "Displays an alert when a job listing on Indeed or LinkedIn includes 'Security Clearance'.",
   "icons": {
     "128": "icons/icon.png"
   },
@@ -14,9 +14,7 @@
     {
       "matches": [
         "*://*.indeed.com/*",
-        "*://www.linkedin.com/jobs/*",
-        "*://www.linkedin.com/jobs/search/*",
-        "*://www.linkedin.com/jobs/view/*"
+        "*://*.linkedin.com/jobs/*"
       ],
       "js": ["content.js"]
     }
