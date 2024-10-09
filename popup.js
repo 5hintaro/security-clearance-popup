@@ -17,5 +17,5 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 // Function to execute within the popup context
 function checkForSCInPopup() {
     const bodyText = document.body.innerText;
-    return /\bSecurity\s*Clearance\b/i.test(bodyText);
+    return /\b(SC\s*Clearance|SC\s*Cleared|Security\s*Clearance|DC\s*Clearance|DC\s*Cleared|)\b/i.test(bodyText);
 }

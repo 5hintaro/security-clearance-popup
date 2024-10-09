@@ -30,13 +30,13 @@ function checkForSecurityClearance() {
 
 // Function to identify Indeed job detail pages
 function isIndeedJobDetailPage() {
-    const url = window.location.href;
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.has('vjk');
 }
 
 // Function to handle page changes
 function handlePageChange() {
+    const url = window.location.href;
     if (isIndeedJobDetailPage()) {
         const urlParams = new URLSearchParams(window.location.search);
         const jobId = urlParams.get('vjk');
@@ -47,7 +47,19 @@ function handlePageChange() {
             alertShown = false; // Reset the flag when navigating to a new job page
             checkForSecurityClearance();
         } else {
-            console.log('Same job detail page. No action taken.');
+            console.log('Same job detail page on Indeed. No action taken.');
+        }
+    } else if (url.includes('/jobs/search/')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('currentJobId');
+        
+        if (jobId !== currentJobId) {
+            console.log('New job detail page detected.');
+            currentJobId = jobId;
+            alertShown = false; // Reset the flag when navigating to a new job page
+            checkForSecurityClearance();
+        } else {
+            console.log('Same job detail page on LinkedIn. No action taken.');
         }
     } else {
         console.log('Not a job detail page. No action taken.');
