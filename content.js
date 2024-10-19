@@ -1,8 +1,6 @@
 // Flag to display the alert only once
 let alertShown = false;
-
-// Variable to store the current job ID
-let currentJobId = null;
+let previousUrl = window.location.href;
 
 // Function to detect Security Clearance
 function checkForSecurityClearance() {
@@ -10,63 +8,49 @@ function checkForSecurityClearance() {
         console.log('Checking for security clearance keywords...');
         const bodyText = document.body ? document.body.innerText : '';
         // Specify the target
-        const scRegex = /\b(SC\s*Clearance|SC\s*Cleared|Security\s*Clearance|DC\s*Clearance|DC\s*Cleared|)\b/i;
-        if (scRegex.test(bodyText)) {
-            console.log('Security clearance keyword found.');
+        const scRegex = /\b(SC\s*Clearance|SC\s*Cleared|Security\s*Clearance|DC\s*Clearance|DC\s*Cleared)\b/i;
+        const matches = bodyText.match(scRegex);
+
+        if (matches) {
+            console.log('Security clearance keyword found:', matches[0]);
             if (!alertShown) {
-                // Display the alert
+                // Display the alert only if it hasn't been shown before
                 alert('This job includes a security clearance requirement!');
-                alertShown = true; // Display the alert only once
+                alertShown = true; // Set the flag to true to avoid showing the alert again
             }
         } else {
-            console.log('Security clearance keywords not found.');
-            // Do not reset the flag if "SC Clearance" etc. are not found
-            // This prevents the alert from being shown again due to dynamic changes in the page
+            // If no match, log this instead of showing an alert
+            console.log('No security clearance keywords found. No alert will be shown.');
         }
     } catch (error) {
         console.error('Error in checkForSecurityClearance:', error);
     }
 }
 
-// Function to identify Indeed job detail pages
-function isIndeedJobDetailPage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.has('vjk');
-}
-
 // Function to handle page changes
 function handlePageChange() {
-    const url = window.location.href;
-    if (isIndeedJobDetailPage()) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const jobId = urlParams.get('vjk');
+    const currentUrl = window.location.href;
+    const urlParams = new URLSearchParams(window.location.search);
 
-        if (jobId !== currentJobId) {
-            console.log('New job detail page detected.');
-            currentJobId = jobId;
-            alertShown = false; // Reset the flag when navigating to a new job page
-            checkForSecurityClearance();
+    // Reset alert only if the URL has actually changed
+    if (currentUrl !== previousUrl) {
+        previousUrl = currentUrl; // Update the previous URL to the current one
+        alertShown = false; // Reset the flag when navigating to a new page
+
+        // Check for Indeed job detail parameters in the URL
+        if (urlParams.get('vjk')) {
+            // Use a delay to ensure that content is fully loaded before checking
+            setTimeout(checkForSecurityClearance, 3000); // Delay for 3 seconds
         } else {
-            console.log('Same job detail page on Indeed. No action taken.');
-        }
-    } else if (url.includes('/jobs/search/')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const jobId = urlParams.get('currentJobId');
-        
-        if (jobId !== currentJobId) {
-            console.log('New job detail page detected.');
-            currentJobId = jobId;
-            alertShown = false; // Reset the flag when navigating to a new job page
-            checkForSecurityClearance();
-        } else {
-            console.log('Same job detail page on LinkedIn. No action taken.');
+            console.log('Not a job detail page. No action taken.');
         }
     } else {
-        console.log('Not a job detail page. No action taken.');
+        console.log('Same page detected. No action taken.');
     }
 }
 
-// Function to initialize MutationObserver
+
+// Function to initialize MutationObserver and history change detection
 function initializeObserver() {
     // Hook into the History API changes to monitor SPA page transitions
     const originalPushState = history.pushState;
@@ -84,7 +68,7 @@ function initializeObserver() {
     // Monitor popstate events (browser back/forward buttons)
     window.addEventListener('popstate', handlePageChange);
 
-    // Monitor DOM changes
+    // Monitor DOM changes with a limit to avoid excessive calls
     const observer = new MutationObserver((mutations, obs) => {
         handlePageChange();
     });

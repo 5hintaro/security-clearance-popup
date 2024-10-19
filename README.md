@@ -1,10 +1,12 @@
-# sc-clearance-popup
+# security-clearance-popup
 
-SC Clearance Alert for Indeed & LinkedIn
+Security Clearance Alert for Indeed
+
+I was unable to apply for a job in the UK with a Security Clearance. You should avoid jobs with a Security Clearance when job hunting in the UK from overseas. So I made this.
 
 ## Description
 
-SC Clearance Alert for Indeed & LinkedIn is a Chrome extension designed to streamline your job search by automatically identifying positions that require security clearances on both Indeed and LinkedIn. Effortlessly stay informed about opportunities that match your clearance level, saving you time and enhancing your application strategy.
+Security Clearance Alert for Indeed is a Chrome extension designed to streamline your job search by automatically identifying positions that require security clearances on Indeed. Effortlessly stay informed about opportunities that match your clearance level, saving you time and enhancing your application strategy.
 
 ## Key Features:
 
