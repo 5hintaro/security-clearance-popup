@@ -10,6 +10,9 @@ Security Clearance Alert for Indeed is a Chrome extension designed to streamline
 
 ## Key Features:
 
-Automatic Keyword Detection: Scans job listings for essential security clearance terms such as "SC Clearance," "SC Cleared," and "Security Clearance."
+Automatic Keyword Detection: Scans job listings for essential security clearance terms such as "SC Clearance", "SC Cleared", "Security Clearance", "DC Clearance" and "DC Cleared".
+
+![Sample](assets/indeed.png)
+
 
 For more detailed information on security clearance levels, please refer to the official UK government publication: [National Security Vetting Clearance Levels](https://www.gov.uk/government/publications/united-kingdom-security-vetting-clearance-levels/national-security-vetting-clearance-levels#security-check-sc)
